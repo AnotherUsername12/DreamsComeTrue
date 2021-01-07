@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+<head>
+<title>Dreamer</title>
+<link rel="stylesheet" href="{% static 'css/indexcss.css' %}">
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <h4>Вы уже зарегистрированы</h4>
+    {% else %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button>Зарегистрироваться</button>
+    </form>
+    {% endif %}
+</body>
+</html>

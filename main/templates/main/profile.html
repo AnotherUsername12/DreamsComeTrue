@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+{% load thumbnail %}
+{% load static %}
+
+<html>
+<head>
+<title>Dreamer</title>
+<link rel="stylesheet" href="{% static 'css/indexcss.css' %}">
+</head>
+<body>
+    <div class="header">
+    <h2><a href="{% url 'main:profile' aid=request.user.id %}">{% if request.user.is_authenticated %}Привет,{{request.user.username}}!</a>{% endif %}{% if not request.user.is_authenticated %}<a class="headertext" href="{% url 'main:register' %}" >Зарегистрироваться</a> <a class="headertext" href="{% url 'main:login' %}" >Войти</a>{% endif %} {% if request.user.is_authenticated %}<a class="headertext" href="{% url 'main:logout' %}" >Выйти</a>{% endif %} <a class="headertext" href="{% url 'main:homepage' %}" >Главная</a> <a class="headertext" href="{% url 'main:my_subscribes' %}">Мои подписки</a> <a href="{% url 'main:profile' aid=request.user.id %}"></a> <a class="headertext" href="{% url 'main:profile' aid=request.user.id %}">Мой Профиль</a> <a class="headertext" href="{% url 'main:add' %}">Добавить</a>{% if request.user.username == profileauthor.username %}{% endif %} <a class="headertext" href="{% url 'main:email_edit' aid=request.user.id %}">Привязать почту:</a></h2>
+    </div>
+    
+    {% if request.user.id != profileauthor.id %}
+    <h2>Профиль {{ profileauthor.username }}, {{ profileauthor.person.subscribes }} Подписчиков</h2>
+    {% else %}
+    <h2>Ваш профиль, {{ profileauthor.person.subscribes }} Подписчиков</h2>
+    {% endif %}
+    
+    {% if profileauthor.person.email != '' and profileauthor.person.stringid != request.user.person.stringid %}
+    <h2><a href="{% url 'main:contact' contact_user=profileauthor.id %}">Связаться</a></h2>
+    {% endif %}
+    
+    
+    {% if profileauthor.id != request.user.id and aid not in request.user.person.subscribed %}
+    <h2><a href="{% url 'main:subscribe' author_id=profileauthor.id %}">Подписаться</a></h2>
+    {% endif %}
+   
+    
+    {% if profileauthor.id != request.user.id and aid in request.user.person.subscribed %}
+    <h2><a href="{% url 'main:unsubscribe' author_id=profileauthor.id %}">Отписаться</a></h2>
+    {% endif %}
+    
+
+    {% if request.user.username == profileauthor.username %} 
+    <h2><a href="{% url 'main:bioedit' aid=request.user.id %}">О себе:</a>{% endif %} {{ profileauthor.person.biography }}</h2>
+    <h2>Мечта - {{ profileauthor.person.dream }}</h2>
+    <h2>{{ profileauthor.person.rubric }}</h2>
+   
+    
+    {% for blog in blog %}
+        {% if aid == blog.authorid %}
+        <div class="blog">
+            {% if blog.image %}
+            <img src="{% thumbnail blog.image 'default' %}">
+            {% endif %}
+            <h2><a href="{% url 'main:detail' blog_id=blog.pk %}">{{ blog.title }}</a></h2>
+            <h4>{{ blog.published|date:"d.m.Y H:i" }}</h4>
+            <h4>{{ blog.views }} - Просмотров</h4>
+        </div>
+        {% endif %}
+    {% endfor %}
+</body>
+</html>

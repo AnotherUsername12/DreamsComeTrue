@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Dreamer</title>    
+</head>
+<body>
+    {% if request.user.is_authenticated %}
+    <h2>Привет, {{request.user.username}}!</h2>
+    {% endif %}
+    <h2><a href="{% url 'main:register' %}" >Зарегистрироваться</a> <a href="{% url 'main:login' %}" >Войти</a> <a href="{% url 'main:logout' %}" >Выйти</a> <a href="{% url 'main:index' %}" >Главная</a> <a href="{% url 'main:my_subscribes' %}">Мои подписки</a> <a href="{% url 'main:profile' aid=request.user.id %}"> <a href="{% url 'main:profile' aid=request.user.id %}">Мой Профиль</a></a></h2>
+    {% for blog in blog %}
+        <div>
+            {% if request.user.username == blog.author %}
+            <h2>{{ blog.author }}</h2>
+            <h2><a href="{% url 'main:detail' blog_id=blog.pk %}">{{ blog.title }}</a></h2>
+            <h3>{{ blog.text }}</h3>
+            {% endif %}
+        </div>
+    {% endfor %}
+</body>
+</html>

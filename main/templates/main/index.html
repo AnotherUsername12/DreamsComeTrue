@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+{% load thumbnail %}
+{% load static %}
+
+<html>
+<head>
+<title>Dreamer</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{% static 'css/indexcss.css' %}">
+</head>
+<body>
+    <div class="header">
+    <h2><a href="{% url 'main:profile' aid=request.user.id %}">{% if request.user.is_authenticated %}Привет,{{request.user.username}}!</a>{% endif %}{% if not request.user.is_authenticated %}<a class="headertext" href="{% url 'main:register' %}" >Зарегистрироваться</a> <a class="headertext" href="{% url 'main:login' %}" >Войти</a>{% endif %} {% if request.user.is_authenticated %}<a class="headertext" href="{% url 'main:logout' %}" >Выйти</a>{% endif %} <a class="headertext" href="{% url 'main:homepage' %}" >Главная</a> <a class="headertext" href="{% url 'main:my_subscribes' %}">Мои подписки</a> <a href="{% url 'main:profile' aid=request.user.id %}"></a> <a class="headertext" href="{% url 'main:profile' aid=request.user.id %}">Мой Профиль</a> <a class="headertext" href="{% url 'main:add' %}">Добавить</a></h2>
+    </div>
+    <form class="searchform" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="submitbutton">
+    </form>
+    <br/>
+    
+    <!-- Найти способ убрать точку -->
+    
+    {% for best_person in best_person %}
+    {% if best_person.id != request.user.id %}
+        <div class="person"> 
+        <h2><a href="{% url 'main:profile' aid=best_person.pk %}">{{ best_person.user.username }}</a></h2>
+        <h3>О себе: {{ best_person.biography }} </h3>
+        <h3>Мечта: {{ best_person.dream }} </h3>
+        </div>
+    {% endif %}
+    {% endfor %}
+    
+    {% for person in person %}
+    {% if person.id != request.user.id %}
+        <div class="person"> 
+        <h2><a href="{% url 'main:profile' aid=person.pk %}">{{ person.user.username }}</a></h2>
+        <h3>О себе: {{ person.biography }} </h3>
+        <h3>Мечта: {{ person.dream }} </h3>
+        </div>
+    {% endif %}
+    {% endfor %}
+</body>
+</html>

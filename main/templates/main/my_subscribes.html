@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+{% load thumbnail %}
+{% load static %}
+
+<html>
+<head>
+<title>Dreamer</title>
+<link rel="stylesheet" href="{% static 'css/indexcss.css' %}">
+</head>
+<body>
+    <div class="header">
+    <h2><a href="{% url 'main:profile' aid=request.user.id %}">{% if request.user.is_authenticated %}Привет,{{request.user.username}}!</a>{% endif %}{% if not request.user.is_authenticated %}<a class="headertext" href="{% url 'main:register' %}" >Зарегистрироваться</a> <a class="headertext" href="{% url 'main:login' %}" >Войти</a>{% endif %} {% if request.user.is_authenticated %}<a class="headertext" href="{% url 'main:logout' %}" >Выйти</a>{% endif %} <a class="headertext" href="{% url 'main:homepage' %}" >Главная</a> <a class="headertext" href="{% url 'main:my_subscribes' %}">Мои подписки</a> <a href="{% url 'main:profile' aid=request.user.id %}"></a> <a class="headertext" href="{% url 'main:profile' aid=request.user.id %}">Мой Профиль</a> <a class="headertext" href="{% url 'main:add' %}">Добавить</a>{% if request.user.username == profileauthor.username %}{% endif %} <a class="headertext" href="{% url 'main:email_edit' aid=request.user.id %}">Привязать почту:</a></h2>
+    </div>
+    
+    <h2> Мои подписки :
+    {% for sub in sub %}
+    {% if sub.person.stringid in request.user.person.subscribed %}
+    <a href="{% url 'main:profile' aid=sub.id %}">{{ sub.username }}</a>
+    {% endif %}
+    {% endfor %}
+    </h2>
+    
+    {% for blog in blog %}
+            {% if blog.authorid in request.user.person.subscribed %}
+            <div class="person">
+            {% if blog.image %}
+            <img src="{% thumbnail blog.image 'default' %}">
+            {% endif %}
+            <h2><a href="{% url 'main:detail' blog_id=blog.pk %}">{{ blog.title }}</a></h2>
+            <h3>{{ blog.author }}</h3>
+            <p>{{ blog.published|date:"d.m.Y H:i" }}</p>
+            </div>
+            {% endif %}
+    {% endfor %}
+</body>
+</html>

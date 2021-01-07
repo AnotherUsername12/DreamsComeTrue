@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+{% load thumbnail %}
+{% load static %}
+
+<html>
+<head>
+<title>Dreamer</title>
+<link rel="stylesheet" href="{% static 'css/indexcss.css' %}">
+</head>
+<body>
+    <div class="header">
+    <h2><a href="{% url 'main:profile' aid=request.user.id %}">{% if request.user.is_authenticated %}Привет,{{request.user.username}}!</a>{% endif %}{% if not request.user.is_authenticated %}<a class="headertext" href="{% url 'main:register' %}" >Зарегистрироваться</a> <a class="headertext" href="{% url 'main:login' %}" >Войти</a>{% endif %} {% if request.user.is_authenticated %}<a class="headertext" href="{% url 'main:logout' %}" >Выйти</a>{% endif %} <a class="headertext" href="{% url 'main:homepage' %}" >Главная</a> <a class="headertext" href="{% url 'main:my_subscribes' %}">Мои подписки</a> <a href="{% url 'main:profile' aid=request.user.id %}"></a> <a class="headertext" href="{% url 'main:profile' aid=request.user.id %}">Мой Профиль</a> <a class="headertext" href="{% url 'main:add' %}">Добавить</a>{% if request.user.username == profileauthor.username %}{% endif %} <a class="headertext" href="{% url 'main:email_edit' aid=request.user.id %}">Привязать почту:</a></h2>
+    </div>
+    
+    {% if blog.image %}
+    <img src="{% thumbnail blog.image 'default' %}">
+    {% endif %}
+    <h2>{{ blog.author }}</h2>
+    <h2>{{ blog.title }}</h2>
+    <h3>{{ blog.text }}</h3>
+    <p>{{ blog.published|date:"d.m.Y H:i" }}</p>
+    <p>{{ blog.views }} - Просмотров</p>
+    
+    {% if request.user.username == blog.author %}
+    <h2><a href="{% url 'main:delete' blog_id=blog.pk %}">Удалить</a></h2>
+    {% endif %}
+    
+    {% if request.user.username != blog.author and blog.authorid not in request.user.person.subscribed %}
+    <h2><a href="{% url 'main:subscribe' author_id=blog.authorid %}">Подписаться</a></h2>
+    {% endif %}
+    {% if request.user.username != blog.author and blog.authorid in request.user.person.subscribed %}
+    <h2><a href="{% url 'main:unsubscribe' author_id=blog.authorid %}">Отписаться</a></h2>
+    {% endif %}
+
+    <h2>Комментарии:</h2>
+    {% for comment in comment %}
+    <h2>{{ comment.comment_author }}</h2>
+    <h3>{{ comment.comment_text }}</h3>
+    <h3>{{ comment.comment_published }}</h3>
+    {% if request.user.username == comment.comment_author or request.user.is_staff %}
+    <h3><a href="{% url 'main:comment_delete' blog_id=blog.pk comment_id=comment.pk %}">Удалить комментарий</a></h3>
+    {% endif %}
+    <br>
+    {% endfor %}
+
+    <h2>Добавление комментария</h2>
+    <form action=""method = "post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Добавить">
+    </form>
+</body>
+</html>
