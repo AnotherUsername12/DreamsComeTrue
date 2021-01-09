@@ -30,7 +30,7 @@
             {% endif %}
             <h2><a href="{% url 'main:detail' blog_id=blog.pk %}">{{ blog.title }}</a></h2>
             <h3>{{ blog.author }}</h3>
-            <p>{{ blog.published|date:"d.m.Y H:i" }}</p>
+            <h3>{{ blog.published|date:"d.m.Y H:i" }}</h3>
             </div>
             {% endif %}
     {% endfor %}

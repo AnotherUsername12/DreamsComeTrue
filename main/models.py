@@ -62,6 +62,7 @@ class Blog(models.Model):
 class Comment(models.Model):
     comment_text = models.CharField(max_length = 150)
     comment_author = models.CharField(max_length = 30, default = 'User')
+    comment_authorid = models.TextField(default = 'z')
     comment_published = models.DateTimeField(auto_now_add = True, db_index = True)
     publicationcomment = models.ForeignKey('Blog', null = True, blank = True, on_delete = models.CASCADE)
     

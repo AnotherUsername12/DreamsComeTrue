@@ -88,17 +88,8 @@ def homepage(request):
         best_person = Person.objects.filter(rubric = best_category_name).order_by('-subscribes')   
         person = Person.objects.exclude(rubric = best_category_name).order_by('-subscribes')
     
-        srch = SearchForm(request.POST)
-        if srch.is_valid():
-            srch = srch.save(commit=False)
-            search = srch.search_field
-            srch.save()
-            return HttpResponseRedirect(reverse('main:search', args=(search,)))
-        else:
-            context = {'best_person' : best_person, 'person' : person, 'form' : srch}
-            return render(request, 'main/index.html', context)
-
-        return render(request, 'main/index.html', {'person' : person,})
+        context = {'best_person' : best_person, 'person' : person}
+        return render(request, 'main/index.html', context)
     
     else:
         person = Person.objects.order_by('-subscribes')
@@ -146,6 +137,7 @@ def blog_detail(request, blog_id):
             cmn = cmn.save(commit=False)
             cmn.comment_author = request.user.username
             cmn.publicationcomment = comment_id
+            cmn.comment_authorid = request.user.id
             cmn.save()
             return HttpResponseRedirect(reverse('main:detail', args=(blog_id,)))
         else:

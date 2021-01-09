@@ -40,13 +40,12 @@
     <h2><a href="{% url 'main:unsubscribe' author_id=profileauthor.id %}">Отписаться</a></h2>
     {% endif %}
     
-
-    {% if request.user.username == profileauthor.username %} 
-    {% endif %}
+    <div class="aboutperson">
     <h2>О себе - {{ profileauthor.person.biography }}</h2>
     <h2>Мечта - {{ profileauthor.person.dream }}</h2>
-    <h2>{{ profileauthor.person.rubric }}</h2>
-   
+    <h2>Категория - {{ profileauthor.person.rubric }}</h2>
+    </div>
+    <br/>
     
     {% for blog in blog %}
         {% if aid == blog.authorid %}

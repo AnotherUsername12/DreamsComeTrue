@@ -18,7 +18,7 @@ class BlogForm(forms.ModelForm):
         
         
 class CommentForm(forms.ModelForm):
-    comment_text = forms.CharField(label = 'Комментарий')
+    comment_text = forms.CharField(label = '')
     
     class Meta:
         model = Comment
@@ -26,7 +26,7 @@ class CommentForm(forms.ModelForm):
         
 
 class SearchForm(forms.ModelForm):
-    search_field = forms.CharField(label = '', error_messages={'required': ''})
+    search_field = forms.CharField(label = '', required = False)
     
     class Meta:
         model = Search
@@ -45,7 +45,7 @@ class BiographyForm(forms.ModelForm):
         
         
 class EmailForm(forms.ModelForm):
-    email = forms.EmailField(label = "Почта", error_messages={'required': 'Указать почту'})
+    email = forms.EmailField(label = "", error_messages={'required': 'Указать почту'})
     
     class Meta:
         model = Email
