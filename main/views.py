@@ -102,20 +102,28 @@ def homepage(request):
     
     else:
         person = Person.objects.order_by('-subscribes')
-        
-        srch = SearchForm(request.POST)
-        if srch.is_valid():
-            srch = srch.save(commit=False)
-            search = srch.search_field
-            srch.save()
-            return HttpResponseRedirect(reverse('main:search', args=(search,)))
-        else:
-            context = {'person' : person, 'form' : srch}
-            return render(request, 'main/index.html', context)
 
         return render(request, 'main/index.html', {'person' : person,})
 
-
+    
+def searchinput(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            srch = SearchForm(request.POST)
+            if srch.is_valid():
+                srch = srch.save(commit=False)
+                search = srch.search_field
+                srch.save()
+                return HttpResponseRedirect(reverse('main:search', args=(search,)))
+            else:
+                context = {'form' : srch}
+                return render(request, 'main/searchinput.html', context)
+        else:
+            srch = SearchForm(request.POST)
+            return render(request, 'main/searchinput.html', {'form' : srch})
+    else:
+        return HttpResponseRedirect(reverse('main:login', args = ()))
+    
     
 def search(request, search):
     persons = User.objects.filter(username__icontains = search).order_by('id')
@@ -147,17 +155,7 @@ def blog_detail(request, blog_id):
         cmn = CommentForm()
         context = {'blog' : blog, 'comment' : comment, 'comment_id' : comment_id, 'form' : cmn}
         return render(request, 'main/detail.html', context)
-
-class CommentDeleteView(LoginRequiredMixin, DeleteView):
-    model = Comment
-    success_url = '/main/'
-    template_name = 'main/delete_comment.html'
     
-    login_url = 'main:login'
-    
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        return context
     
 def comment_delete(request, blog_id, comment_id):
     comment = Comment.objects.get(id = comment_id)

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 
-from .views import homepage, index, blog_detail, create_blog, delete_blog, search, registerview, subscribe_blog, unsubscribe_blog, my_subscribes, profile, biography_edit, email_edit, contact, comment_delete
+from .views import homepage, index, blog_detail, create_blog, delete_blog, searchinput, search, registerview, subscribe_blog, unsubscribe_blog, my_subscribes, profile, biography_edit, email_edit, contact, comment_delete
 
 from django.contrib.auth.views import LoginView, LogoutView
 
@@ -21,6 +21,7 @@ urlpatterns = [
     path('register/', registerview, name = 'register'),
     path('add/', create_blog, name = 'add'),
     path('delete/<int:blog_id>/', delete_blog, name = 'delete'),
+    path('searchuser/', searchinput, name = 'searchinput'),
     path('search/<str:search>/', search, name = 'search'),
     path('detail/<int:blog_id>/', blog_detail, name = 'detail'),
     path('accounts/login/', LoginView.as_view(redirect_field_name='main:add', template_name="main/login_website.html"), name = 'login'),

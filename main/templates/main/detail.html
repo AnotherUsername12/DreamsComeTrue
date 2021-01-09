@@ -10,7 +10,8 @@
 </head>
 <body>
     <div class="header">
-    <h2><a href="{% url 'main:profile' aid=request.user.id %}">{% if request.user.is_authenticated %}Привет,{{request.user.username}}!</a>{% endif %}{% if not request.user.is_authenticated %}<a class="headertext" href="{% url 'main:register' %}" >Зарегистрироваться</a> <a class="headertext" href="{% url 'main:login' %}" >Войти</a>{% endif %} {% if request.user.is_authenticated %}<a class="headertext" href="{% url 'main:logout' %}" >Выйти</a>{% endif %} <a class="headertext" href="{% url 'main:homepage' %}" >Главная</a> <a class="headertext" href="{% url 'main:my_subscribes' %}">Мои подписки</a> <a href="{% url 'main:profile' aid=request.user.id %}"></a> <a class="headertext" href="{% url 'main:profile' aid=request.user.id %}">Мой Профиль</a> <a class="headertext" href="{% url 'main:add' %}">Добавить</a>{% if request.user.username == profileauthor.username %}{% endif %} <a class="headertext" href="{% url 'main:email_edit' aid=request.user.id %}">Привязать почту:</a></h2>
+    <h2><img src="{% static 'logo/logo.png' %}" height="100" width="100" class="logo">
+    <a href="{% url 'main:profile' aid=request.user.id %}">{% if request.user.is_authenticated %}Привет,{{request.user.username}}!</a>{% endif %}{% if not request.user.is_authenticated %}<a class="headertext" href="{% url 'main:register' %}" >Зарегистрироваться</a> <a class="headertext" href="{% url 'main:login' %}" >Войти</a>{% endif %} {% if request.user.is_authenticated %}<a class="headertext" href="{% url 'main:logout' %}" >Выйти</a>{% endif %} <a class="headertext" href="{% url 'main:homepage' %}" >Главная</a> <a class="headertext" href="{% url 'main:my_subscribes' %}">Мои подписки</a> <a href="{% url 'main:profile' aid=request.user.id %}"></a> <a class="headertext" href="{% url 'main:profile' aid=request.user.id %}">Мой Профиль</a></h2>
     </div>
     
     {% if blog.image %}
