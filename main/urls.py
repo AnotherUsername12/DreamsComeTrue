@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 
-from .views import homepage, index, blog_detail, create_blog, delete_blog, searchinput, search, registerview, subscribe_blog, unsubscribe_blog, my_subscribes, profile, biography_edit, email_edit, contact, comment_delete
+from .views import homepage, index, blog_detail, create_blog, delete_blog, searchinput, by_category, search, registerview, subscribe_blog, unsubscribe_blog, my_subscribes, profile, biography_edit, email_edit, contact, comment_delete
 
 from django.contrib.auth.views import LoginView, LogoutView
 
@@ -10,6 +10,7 @@ app_name = 'main'
 urlpatterns = [
     path('', index, name='index'),
     path('homepage/', homepage, name='homepage'),
+    path('by_category/<str:category>', by_category, name='by_category'),
     path('email/<str:aid>/', email_edit, name = 'email_edit'),
     path('contact/<str:contact_user>/', contact, name = 'contact'),
     path('biography_edit/<str:aid>/', biography_edit, name = 'bioedit'),

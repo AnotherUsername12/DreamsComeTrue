@@ -16,29 +16,19 @@
     {% if not request.user.is_authenticated %}<a class="headertext" href="{% url 'main:register' %}" >Зарегистрироваться</a> <a class="headertext" href="{% url 'main:login' %}" >Войти</a>{% endif %} {% if request.user.is_authenticated %}<a class="headertext" href="{% url 'main:logout' %}" >Выйти</a>{% endif %} <a class="headertext" href="{% url 'main:homepage' %}" >Главная</a> <a class="headertext" href="{% url 'main:my_subscribes' %}">Мои подписки</a> <a href="{% url 'main:profile' aid=request.user.id %}"></a> <a class="headertext" href="{% url 'main:profile' aid=request.user.id %}">Мой Профиль</a> <a class="headertext" href="{% url 'main:searchinput' %}">Поиск</a></h2>
     </div>
     
-    <div class="category">
-    <h2>Категории: {% for rubric in rubrics %} {% if forloop.last %} <a href="{% url 'main:by_category' category=rubric.drubric %}">{{ rubric.drubric }}</a>. {% else %} <a href="{% url 'main:by_category' category=rubric.drubric %}">{{ rubric.drubric }}</a>, {% endif %} {% endfor %}</h2>
-    </div>
+    {% if person %}
     
-    
-    {% for best_person in best_person %}
-    {% if best_person.id != request.user.id %}
-        <div class="person"> 
-        <h2><a href="{% url 'main:profile' aid=best_person.pk %}">{{ best_person.user.username }}</a></h2>
-        <h3>О себе: {{ best_person.biography }} </h3>
-        <h3>Мечта: {{ best_person.dream }} </h3>
-        </div>
-    {% endif %}
-    {% endfor %}
-    
-    {% for person in person %}
-    {% if person.id != request.user.id %}
+        {% for person in person %}
+        {% if person.id != request.user.id %}
         <div class="person"> 
         <h2><a href="{% url 'main:profile' aid=person.pk %}">{{ person.user.username }}</a></h2>
         <h3>О себе: {{ person.biography }} </h3>
         <h3>Мечта: {{ person.dream }} </h3>
         </div>
+        {% endif %}
+        {% endfor %}
+    {% else %}
+        <h2>Профилей с такой категорией не существует.</h2>
     {% endif %}
-    {% endfor %}
 </body>
 </html>

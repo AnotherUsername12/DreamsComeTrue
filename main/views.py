@@ -18,7 +18,7 @@ from .forms import BlogForm, SearchForm, BiographyForm, EmailForm, CommentForm
 from django.contrib.auth.forms import UserCreationForm
 
 
-from .models import Blog, Person, Biography, Comment
+from .models import Blog, Person, DreamRubric, Biography, Comment
 
 from django.core.mail import send_mail
 
@@ -87,15 +87,25 @@ def homepage(request):
         
         best_person = Person.objects.filter(rubric = best_category_name).order_by('-subscribes')   
         person = Person.objects.exclude(rubric = best_category_name).order_by('-subscribes')
+        rubrics = DreamRubric.objects.all()
     
-        context = {'best_person' : best_person, 'person' : person}
+        context = {'best_person' : best_person, 'person' : person, 'rubrics' : rubrics}
         return render(request, 'main/index.html', context)
     
     else:
         person = Person.objects.order_by('-subscribes')
-
-        return render(request, 'main/index.html', {'person' : person,})
-
+        rubrics = DreamRubric.objects.all()
+        
+        context = {'person' : person, 'rubrics' : rubrics}
+        return render(request, 'main/index.html', context)
+    
+    
+def by_category(request, category):
+    person = Person.objects.filter(rubric = category).order_by('-subscribes')
+    
+    context = {'person' : person}
+    return render(request, 'main/by_category.html', context)
+    
     
 def searchinput(request):
     if request.user.is_authenticated:

@@ -14,7 +14,7 @@ body {
     background: cover;
     margin: -30px -20px 20px -30px;
     padding: 10px 30px;
-    border:1px solid black;
+    border-bottom:1px solid black;
     list-style: none;
 }
 
@@ -61,6 +61,14 @@ body {
     padding: 10px 10px 10px 10px;
     display: inline-block;
     margin-right: 10px;
+}
+
+
+
+.category {
+    margin: -20px -20px 20px -30px;
+    padding: 10px 30px;
+    border-bottom: 1px solid black;
 }
 
 
