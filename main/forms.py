@@ -14,7 +14,7 @@ class BlogForm(forms.ModelForm):
     
     class Meta:
         model = Blog
-        fields = ('title', 'image',)
+        fields = ('title', 'text', 'image',)
         
         
 class CommentForm(forms.ModelForm):

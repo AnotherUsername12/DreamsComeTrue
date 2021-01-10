@@ -38,9 +38,10 @@
     </div>
     
 
-    <h2>Комментарии:</h2>
+    
     
     {% if comment %}
+    <h2>Комментарии:</h2>
     {% for comment in comment %}
     <div class="comments">
     <h2><a href="{% url 'main:profile' aid=comment.comment_authorid %}">{{ comment.comment_author }}</a></h2>
@@ -51,7 +52,12 @@
     {% endif %}
     </div>
     {% endfor %}
+    
+    {% else %}
+    <h2>Комментарии отсутсвуют. Вы можете стать первым!</h2>
+    
     {% endif %}
+    
 
     <h2>Добавление комментария:</h2>
     <form action=""method = "post">
