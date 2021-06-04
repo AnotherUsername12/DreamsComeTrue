@@ -1,22 +1,24 @@
-<!DOCTYPE html>
+{% extends "main/base.html" %}
+{% block content %}
 
-{% load static %}
-
-<html>
-<head>
-<title>Dreamer</title>
-<link rel="stylesheet" href="{% static 'css/indexcss.css' %}">
-</head>
-<body>
-    {% if user.is_authenticated %}
-    <h4>Вы уже вошли на сайт</h4>
-    {% else %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="hidden" name="next" value="{{ next }}">
-        <input type="submit" value="Войти">
-    </form>
-    {% endif %}
-</body>
-</html>
+    
+    <!-- LOGIN -->
+    <div class="container">
+        <br/>
+        <br/>
+        {% load crispy_forms_tags %}
+        {% if user.is_authenticated %}
+        <h4>You are already logged in</h4>
+        {% else %}
+        <form method="post" class="form-signin">
+            <h1 class="h3 mb-3 font-weight-normal">Sing in</h1>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <br/>
+            <input type="hidden" name="next" value="{{ next }}">
+            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Log in">
+        </form>
+        {% endif %}
+    </div>
+    
+{% endblock content %}

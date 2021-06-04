@@ -11,7 +11,7 @@ class Person(models.Model):
     subscribes = models.IntegerField(default = 0)
     subscribed = models.TextField(default = 'Z')
     dream = models.CharField(max_length = 50, default = '')
-    biography = models.CharField(max_length = 200, default = 'Hello. I use ToDo app.')
+    biography = models.CharField(max_length = 200, default = 'Hello. I have not chosen my dream yet.')
     email = models.EmailField(default = '')
     rubric = models.CharField(max_length = 100, default = '')
     
@@ -64,6 +64,7 @@ class Comment(models.Model):
     comment_author = models.CharField(max_length = 30, default = 'User')
     comment_authorid = models.TextField(default = 'z')
     comment_published = models.DateTimeField(auto_now_add = True, db_index = True)
+    comment_blogid = models.TextField(default = 'z')
     publicationcomment = models.ForeignKey('Blog', null = True, blank = True, on_delete = models.CASCADE)
     
     def __str__(self):
@@ -75,7 +76,7 @@ class Search(models.Model):
     
     
 class Biography(models.Model):
-    bio = models.CharField(max_length = 200, default = 'Hello. I use ToDo app.')
+    bio = models.CharField(max_length = 200, default = 'Hello. I have not chosen my dream yet.')
     dream = models.CharField(max_length = 50, default = '')
     rubric = models.ForeignKey('DreamRubric', null = True, on_delete=models.PROTECT, verbose_name='Рубика')
     dreamrubric = models.CharField(max_length = 100, default = '')

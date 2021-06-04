@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect
 
 from django.urls import reverse
 
-from .forms import BlogForm, SearchForm, BiographyForm, EmailForm, CommentForm
+from .forms import BlogForm, SearchForm, BiographyForm, EmailForm, CommentForm, CustomUserCreationForm
 
 from django.contrib.auth.forms import UserCreationForm
 
@@ -26,7 +26,7 @@ from django.core.mail import send_mail
 
 def index(request):
     if request.user.is_authenticated:
-        if request.user.person.dream != '' or request.user.person.biography != 'Hello. I use ToDo app.':
+        if request.user.person.dream != '' or request.user.person.biography != 'Hello. I have not chosen my dream yet.':
             request.user.person.stringid = request.user.id
             request.user.save()
             return HttpResponseRedirect(reverse('main:homepage', args=()))
@@ -47,43 +47,43 @@ def homepage(request):
     
         if best_category < request.user.person.tourism_views:
             best_category = request.user.person.tourism_views
-            best_category_name = 'Туризм'
+            best_category_name = 'Tourism'
     
         if best_category < request.user.person.travel_views:
             best_category = request.user.person.travel_views
-            best_category_name = 'Путешествия'
+            best_category_name = 'Travel'
     
         if best_category < request.user.person.technologies_views:
             best_category = request.user.person.technologies_views
-            best_category_name = 'Технологии'
+            best_category_name = 'Technologies'
         
         if best_category < request.user.person.car_views:
             best_category = request.user.person.car_views
-            best_category_name = 'Автомобили'
+            best_category_name = 'Vehicle'
 
         if best_category < request.user.person.food_views:
             best_category = request.user.person.food_views
-            best_category_name = 'Еда'
+            best_category_name = 'Food'
 
         if best_category < request.user.person.collecting_views:
             best_category = request.user.person.collecting_views
-            best_category_name = 'Коллекционирование'
+            best_category_name = 'Collecting'
 
         if best_category < request.user.person.career_views:
             best_category = request.user.person.career_views
-            best_category_name = 'Карьера'
+            best_category_name = 'Career'
 
         if best_category < request.user.person.health_views:
             best_category = request.user.person.health_views
-            best_category_name = 'Здоровье'
+            best_category_name = 'Health'
 
         if best_category < request.user.person.meeting_views:
             best_category = request.user.person.meeting_views
-            best_category_name = 'Встреча'
+            best_category_name = 'Communication'
 
         if best_category < request.user.person.other_views:
             best_category = request.user.person.other_views
-            best_category_name = 'Другое'
+            best_category_name = 'Other'
         
         best_person = Person.objects.filter(rubric = best_category_name).order_by('-subscribes')   
         person = Person.objects.exclude(rubric = best_category_name).order_by('-subscribes')
@@ -102,13 +102,15 @@ def homepage(request):
     
 def by_category(request, category):
     person = Person.objects.filter(rubric = category).order_by('-subscribes')
+    rubrics = DreamRubric.objects.all()
     
-    context = {'person' : person}
+    context = {'person' : person, 'rubrics' : rubrics}
     return render(request, 'main/by_category.html', context)
     
     
 def searchinput(request):
     if request.user.is_authenticated:
+        rubrics = DreamRubric.objects.all()
         if request.method == 'POST':
             srch = SearchForm(request.POST)
             if srch.is_valid():
@@ -117,24 +119,26 @@ def searchinput(request):
                 srch.save()
                 return HttpResponseRedirect(reverse('main:search', args=(search,)))
             else:
-                context = {'form' : srch}
+                context = {'form' : srch, 'rubrics' : rubrics}
                 return render(request, 'main/searchinput.html', context)
         else:
             srch = SearchForm(request.POST)
-            return render(request, 'main/searchinput.html', {'form' : srch})
+            return render(request, 'main/searchinput.html', {'form' : srch, 'rubrics' : rubrics})
     else:
         return HttpResponseRedirect(reverse('main:login', args = ()))
     
     
 def search(request, search):
     persons = User.objects.filter(username__icontains = search).order_by('id')
-    context = {'persons' : persons}
-    return render(request, 'main/tasksearch.html', context)
+    rubrics = DreamRubric.objects.all()
+    context = {'persons' : persons, 'rubrics' : rubrics}
+    return render(request, 'main/personsearch.html', context)
     
 def blog_detail(request, blog_id):
     blog = Blog.objects.get(pk = blog_id)
-    comment = Comment.objects.filter(publicationcomment = blog_id)
+    comment = Comment.objects.filter(comment_blogid = blog_id)
     comment_id = get_object_or_404(Blog, id = blog_id)
+    rubrics = DreamRubric.objects.all()
     if str(request.user.id) not in blog.viewers:
         blog.views += 1
         blog.viewers += ' '
@@ -148,14 +152,15 @@ def blog_detail(request, blog_id):
             cmn.comment_author = request.user.username
             cmn.publicationcomment = comment_id
             cmn.comment_authorid = request.user.id
+            cmn.comment_blogid = blog.id
             cmn.save()
             return HttpResponseRedirect(reverse('main:detail', args=(blog_id,)))
         else:
-            context = {'blog' : blog, 'comment' : comment, 'comment_id' : comment_id, 'form' : cmn}
+            context = {'blog' : blog, 'comment' : comment, 'comment_id' : comment_id, 'form' : cmn, 'rubrics' : rubrics}
             return render(request, 'main/detail.html', context)
     else:
         cmn = CommentForm()
-        context = {'blog' : blog, 'comment' : comment, 'comment_id' : comment_id, 'form' : cmn}
+        context = {'blog' : blog, 'comment' : comment, 'comment_id' : comment_id, 'form' : cmn, 'rubrics' : rubrics}
         return render(request, 'main/detail.html', context)
     
     
@@ -170,7 +175,7 @@ def contact(request, contact_user):
     if request.user.is_authenticated:
         if request.user.person.email != '':
             user = User.objects.get(id = contact_user)
-            message = f'Привет, {user.username}! Пользователь {request.user.username} хочет связаться с тобой. Его почта: {request.user.person.email}.'
+            message = f'Hello, {user.username}! User {request.user.username} wants to contact you. You can reply to this mail: {request.user.person.email}.'
             send_mail('Dreamer', message, 'morethanicloud@icloud.com', [user.person.email], fail_silently=False)
             return HttpResponseRedirect(reverse('main:profile', args = (contact_user,)))
         else:
@@ -180,6 +185,7 @@ def contact(request, contact_user):
 
 def create_blog(request):
     if request.user.is_authenticated:
+        rubrics = DreamRubric.objects.all()
         if request.method == 'POST':
             bf = BlogForm(request.POST, request.FILES)
             if bf.is_valid():
@@ -190,10 +196,10 @@ def create_blog(request):
                 bf.save()
                 return HttpResponseRedirect(reverse('main:profile', args=(request.user.id,)))
             else:
-                return render(request, 'main/create.html', {'form' : bf})
+                return render(request, 'main/create.html', {'form' : bf, 'rubrics' : rubrics})
         else:
             bf = BlogForm()
-            return render(request, 'main/create.html', {'form' : bf})
+            return render(request, 'main/create.html', {'form' : bf, 'rubrics' : rubrics})
     else:
         return HttpResponseRedirect(reverse('main:login', args = ()))
 
@@ -219,7 +225,7 @@ def subscribe_blog(request, author_id):
             author.person.save()
             request.user.save()
             if author.person.email != '':
-                send_mail('TaskControll', 'У вас новый подписчик!', 'morethanicloud@icloud.com', [author.person.email], fail_silently=False)
+                send_mail('ComeTrue', 'You have a new subscriber!', 'morethanicloud@icloud.com', [author.person.email], fail_silently=False)
             context = {'author' : author}
             return HttpResponseRedirect(reverse('main:profile', args=(author.id,)))
     else:
@@ -244,15 +250,17 @@ def unsubscribe_blog(request, author_id):
     
 def my_subscribes(request):
     if request.user.is_authenticated:
+        rubrics = DreamRubric.objects.all()
         sub = User.objects.order_by('-id')
         blog = Blog.objects.order_by('-published')
-        context = {'sub' : sub, 'blog' : blog}
+        context = {'sub' : sub, 'blog' : blog, 'rubrics' : rubrics}
         return render(request, 'main/my_subscribes.html', context)
     else: 
         return HttpResponseRedirect(reverse('main:login', args = ()))
     
 def profile(request, aid):
     if request.user.is_authenticated:
+        rubrics = DreamRubric.objects.all()
         blog = Blog.objects.order_by('-published')
         profileauthor = User.objects.get(id = aid)
     
@@ -317,7 +325,7 @@ def profile(request, aid):
                 request.user.person.visited_profile += str(profileauthor.id)
                 request.user.person.save()
     
-        context = {'blog' : blog, 'aid' : aid, 'profileauthor' : profileauthor}
+        context = {'blog' : blog, 'aid' : aid, 'profileauthor' : profileauthor, 'rubrics' : rubrics}
         return render(request, 'main/profile.html', context)
     else: 
         return HttpResponseRedirect(reverse('main:login', args = ()))
@@ -325,6 +333,7 @@ def profile(request, aid):
 #Чтобы сделать сортировку профилей по просматриваемым категориям пользователя, сделать поле rubric у person с выбором queryset в forms из десяти уже созданных категорий. Дальше добавить по полю-счётчику просмотров с каждой категории. Например, travelviewscounter, которому в результате просмотра профиля с категорией travel добавляется просмотр. Далее, сделать в контроллере index распределение категорий по более просматриваемым, как best_category и так далее.
 def biography_edit(request, aid):
     if request.user.is_authenticated:
+        rubrics = DreamRubric.objects.all()
         if request.method == 'POST':
             pbi = get_object_or_404(User, id = aid)
             bf = BiographyForm(request.POST)
@@ -338,15 +347,16 @@ def biography_edit(request, aid):
                 request.user.save()
                 return HttpResponseRedirect(reverse('main:profile', args=(pbi.id,)))
             else:
-                return render(request, 'main/biography_edit.html', {'form' : bf})
+                return render(request, 'main/biography_edit.html', {'form' : bf, 'rubrics' : rubrics})
         else:
             bf = BiographyForm()
-            return render(request, 'main/biography_edit.html', {'form' : bf})
+            return render(request, 'main/biography_edit.html', {'form' : bf, 'rubrics' : rubrics})
     else:
         return HttpResponseRedirect(reverse('main:login', args = ()))
     
 def email_edit(request, aid):
     if request.user.is_authenticated:
+        rubrics = DreamRubric.objects.all()
         if request.method == 'POST':
             pem = get_object_or_404(User, id = aid)
             ef = EmailForm(request.POST)
@@ -356,23 +366,24 @@ def email_edit(request, aid):
                 ef.save()
                 pem.save()
                 request.user.save()
-                send_mail('Dreamer', 'Здравствуйте, это письмо от веб-сайта Dreamer. Вы успешно привязали свою почту!', 'morethanicloud@icloud.com', [pem.person.email], fail_silently=False)
+                send_mail('ComeTrue', 'Hello. This email is from the ComeTrue website. You have successfully linked your mail!', 'morethanicloud@icloud.com', [pem.person.email], fail_silently=False)
                 return HttpResponseRedirect(reverse('main:profile', args=(pem.id,)))
             else:
-                return render(request, 'main/email_edit.html', {'form' : ef})
+                return render(request, 'main/email_edit.html', {'form' : ef, 'rubrics' : rubrics})
         else:
             ef = EmailForm()
-            return render(request, 'main/email_edit.html', {'form' : ef})
+            return render(request, 'main/email_edit.html', {'form' : ef, 'rubrics' : rubrics})
     else:
         return HttpResponseRedirect(reverse('main:login', args = ()))
     
 def registerview(request):
+    rubrics = DreamRubric.objects.all()
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('main:index', args=()))
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
         
-    return render(request, 'main/register.html', {'form' : form})
+    return render(request, 'main/register.html', {'form' : form, 'rubrics' : rubrics})

@@ -1,0 +1,27 @@
+{% extends "main/base.html" %}
+{% block content %}
+
+    <div class="album py-5 bg-light">
+        <div class="container">
+          <div class="row">
+             {% if persons %}
+                {% for person in persons %}
+                <div class="col-md-4">
+                  <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                      <h2 class="card-text"><a href="{% url 'main:profile' aid=person.pk %}">{{ person.username }}</a></h2>    
+                      <h3 class="card-text">About: {{ person.person.biography }}</h3>
+                      <h3 class="card-text">Dream: {{ person.person.dream }}</h3>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              {% else %}
+              <h2>The search has not given any results.<a href="{% url 'main:searchinput' %}">Return to search.</a></h2>
+              {% endif %}
+              
+          </div>
+        </div>
+    </div>
+
+{% endblock %}

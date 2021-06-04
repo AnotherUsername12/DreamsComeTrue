@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'easy_thumbnails',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -113,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -151,11 +152,14 @@ MEDIA_URL = '/media/'
 THUMBNAIL_ALIASES = {
     'main.Blog.image': {
         'default': {
-            'size': {200, 0},
+            'size': {1200, 0},
             'crop': 'scale',
         },
     },
 }
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 THUMBNAIL_PREFIX = 'mini_'
 

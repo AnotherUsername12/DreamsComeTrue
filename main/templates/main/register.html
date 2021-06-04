@@ -1,21 +1,35 @@
-<!DOCTYPE html>
-
-{% load static %}
-
-<html>
-<head>
-<title>Dreamer</title>
-<link rel="stylesheet" href="{% static 'css/indexcss.css' %}">
-</head>
-<body>
+{% extends "main/base.html" %}
+{% block content %}
+    
+    
+    <!-- REGISTER -->
+    <br/>
+    <br/>
     {% if user.is_authenticated %}
-    <h4>Вы уже зарегистрированы</h4>
+    <h4>You are already logged in</h4>
     {% else %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button>Зарегистрироваться</button>
-    </form>
+    <div class="container">
+        {% load crispy_forms_tags %}
+        <form method="post" class="form-signin">
+            <h1 class="h3 mb-3 font-weight-normal">Register</h1>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <br/>
+            <input type="hidden" name="next" value="{{ next }}">
+            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Register">
+        </form>
+    </div>
     {% endif %}
-</body>
-</html>
+    
+    
+    <!-- FOOTER -->
+    <footer class="text-muted">
+        <div class="container">
+            <p class="float-right">
+            <a href="#"></a>
+            </p>
+            <p>All rights reserved by &copy; ComeTrue, 2021</p>
+        </div>
+    </footer>
+
+{% endblock content %}

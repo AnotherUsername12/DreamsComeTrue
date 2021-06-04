@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+{% load thumbnail %}
+{% load static %}
+
+<html>
+<head>
+    <title>Come True</title>
+    <meta charset="UTF-8">
+    <!-- <link rel="stylesheet" href="{% static 'css/indexcss.css' %}">  -->
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+</head>
+    
+<body>
+    <!-- HEADER -->
+    <header>
+      <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+          <div class="row">
+              
+            <div class="col-sm-8 col-md-7 py-4">
+              <h4 class="text-white">Come True</h4>
+              <p class="text-muted">Make your dreams come true! –(c) Shia LaBeouf</p>
+            </div>
+              
+            <div class="col-sm-8 col-md-7 py-4">
+                <h4 class="text-white">Categories:
+                {% for rubric in rubrics %} 
+                {% if forloop.last %}
+                <a href="{% url 'main:by_category' category=rubric.drubric %}" class="text-white">{{ rubric.drubric }}.</a>
+                  
+                {% else %} 
+                <a href="{% url 'main:by_category' category=rubric.drubric %}" class="text-white">{{ rubric.drubric }},</a>
+                  
+                {% endif %}
+                {% endfor %}
+                </h4>
+            </div>
+              
+            {% if request.user.is_authenticated %}
+            <div class="col-sm-4 offset-md-1 py-4">
+              <h4 class="text-white">Navigation:</h4>
+              <ul class="list-unstyled">
+                <li><a href="{% url 'main:homepage' %}">Homepage</a></li>
+                <li><a href="{% url 'main:my_subscribes' %}">My subscribes</a></li>
+                <li><a href="{% url 'main:profile' aid=request.user.id %}">Profile</a></li>
+                <li><a href="{% url 'main:searchinput' %}">Search</a></li>
+                <li><a href="{% url 'main:logout' %}">Quit</a></li>
+                  
+                {% if request.user.client.status == 'Admin' or request.user.client.status == 'Moderator' %}
+                <li><a href="{% url 'main:article_publish' %}">Add article</a></li>
+                  
+                {% if request.user.client.status == 'Admin' %}
+                <li><a href="{% url 'main:moderating_bio_all' %}">Profile moderation</a></li>
+                {% endif %}
+                {% endif %}  
+                  
+                
+              </ul>
+            </div>
+            {% else %}
+            <div class="col-sm-4 offset-md-1 py-4">
+              <h4 class="text-white">Navigation:</h4>
+              <ul class="list-unstyled">
+                <li><a href="{% url 'main:register' %}">Register</a></li>
+                <li><a href="{% url 'main:login' %}">Log in</a></li>
+              </ul>
+            </div>
+            {% endif %} 
+          </div>
+        </div>
+      </div>
+        
+        
+      <div class="navbar navbar-dark bg-dark box-shadow">
+        <div class="container d-flex justify-content-between">
+          <a href="{% url 'main:homepage' %}" class="navbar-brand d-flex align-items-center">
+            <strong>Come True</strong>
+          </a>
+          <h2 class="navbar-brand d-flex align-items-center">{% if request.user.is_authenticated %} Hello, {{request.user.username}}! {% endif %}</h2>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    {% block content %}
+    {% endblock %}
+    
+    <!-- FOOTER -->
+    <footer class="text-muted">
+        <div class="container">
+            <p class="float-right">
+            <a href="#"></a>
+            </p>
+            <p>All rights reserved by &copy; ComeTrue, 2021</p>
+        </div>
+    </footer>
+</body>
+</html>
